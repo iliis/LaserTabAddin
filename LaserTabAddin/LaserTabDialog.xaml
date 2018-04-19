@@ -1,0 +1,16 @@
+﻿<Window x:Name="LaserTabDialogWin" x:Class="LaserTabAddin.LaserTabDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LaserTabAddin"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" ShowInTaskbar="False">
+    <Grid>
+        <Button x:Name="button_cancel" Content="Cancel" HorizontalAlignment="Right" Margin="0,0,10.333,9.667" VerticalAlignment="Bottom" Width="75" IsCancel="True"/>
+        <Button x:Name="button_ok" Content="OK" HorizontalAlignment="Left" Margin="122,241,0,0" VerticalAlignment="Top" Width="75" IsDefault="True"/>
+        <Label x:Name="label" Content="Hallo Welt... :)" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="input_test" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" Text="enter something here..." VerticalAlignment="Top" Width="273" />
+
+    </Grid>
+</Window>

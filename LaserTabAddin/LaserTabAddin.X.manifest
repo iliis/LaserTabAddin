@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+
+  <assemblyIdentity name="LaserTabAddin" version="1.0.0.0"></assemblyIdentity>
+
+  <clrClass clsid="{0defbf22-e302-4266-9bc9-fb80d5c8eb7e}" progid="LaserTabAddin.StandardAddInServer" threadingModel="Both" name="LaserTabAddin.StandardAddInServer" runtimeVersion=""></clrClass>
+
+  <file name="LaserTabAddin.dll" hashalg="SHA1"></file>
+
+</assembly>
