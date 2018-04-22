@@ -266,8 +266,17 @@ namespace LaserTabAddin
                 }
 
 
+                // appearantly, Profiles.AddForSolid() doesn't like lines that are made entirely out of projected points... (maybe because the line already exists?)
+                SketchPoint P_orig_proj = P_orig, P_short_proj = P_short;
+
+                P_short = sketch.SketchPoints.Add(P_short_proj.Geometry, false);
+                P_orig  = sketch.SketchPoints.Add(P_orig_proj.Geometry, false);
+
+                sketch.GeometricConstraints.AddCoincident((SketchEntity) P_short, (SketchEntity) P_short_proj);
+                sketch.GeometricConstraints.AddCoincident((SketchEntity)P_orig, (SketchEntity)P_orig_proj);
+
                 // create dimension constraints
-                
+
                 // TODO: calculate better position for text label
                 TwoPointDistanceDimConstraint constr_short = sketch.DimensionConstraints.AddTwoPointDistance(
                     P_orig, P_short, DimensionOrientationEnum.kAlignedDim,
@@ -335,27 +344,7 @@ namespace LaserTabAddin
 
 
 
-                Profile profile = sketch.Profiles.AddForSolid(false);//, rect);
-
-                // ugly hack, as AddForSolid(false, rect) doesn't seem to work and I have no idea why :(
-                foreach (ProfilePath p in profile)
-                {
-                    bool is_good = false;
-                    foreach(ProfileEntity o in p)
-                    {
-                        if (o.SketchEntity == l1)
-                        {
-                            is_good = true;
-                        }
-                    }
-
-                    if (!is_good)
-                    {
-                        p.Delete();
-                    }
-                }
-
-                Debug.Print("got {0} profile paths left", profile.Count);
+                Profile profile = sketch.Profiles.AddForSolid(false, rect);
 
                 // extrude said rectangle
                 ExtrudeDefinition extrusion_def = document.ComponentDefinition.Features.ExtrudeFeatures.CreateExtrudeDefinition(profile, PartFeatureOperationEnum.kCutOperation);
