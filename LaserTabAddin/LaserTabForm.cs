@@ -22,6 +22,12 @@ namespace LaserTabAddin
             hw_label.Text = text;
         }
 
+        public void setEdgeInfo(string shortedge, string longedge)
+        {
+            label_shortedge.Text = shortedge;
+            label_longedge.Text = longedge;
+        }
+
         private void LaserTabForm_Load(object sender, EventArgs e)
         {
 
@@ -30,6 +36,11 @@ namespace LaserTabAddin
         private void button_cancel_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

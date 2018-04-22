@@ -35,6 +35,8 @@
             this.hw_label = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label_shortedge = new System.Windows.Forms.Label();
+            this.label_longedge = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -96,14 +98,20 @@
             this.tableLayoutPanel1.Controls.Add(this.hw_label, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.test_button, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.label_shortedge, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.label_longedge, 1, 6);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowCount = 8;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(988, 545);
             this.tableLayoutPanel1.TabIndex = 7;
             // 
@@ -113,12 +121,30 @@
             this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel1.Controls.Add(this.button_cancel);
             this.flowLayoutPanel1.Controls.Add(this.button_ok);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(103, 506);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(103, 426);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(882, 36);
             this.flowLayoutPanel1.TabIndex = 6;
+            // 
+            // label_shortedge
+            // 
+            this.label_shortedge.AutoSize = true;
+            this.label_shortedge.Location = new System.Drawing.Point(103, 485);
+            this.label_shortedge.Name = "label_shortedge";
+            this.label_shortedge.Size = new System.Drawing.Size(94, 20);
+            this.label_shortedge.TabIndex = 10;
+            this.label_shortedge.Text = "Hallo Welt :)";
+            // 
+            // label_longedge
+            // 
+            this.label_longedge.AutoSize = true;
+            this.label_longedge.Location = new System.Drawing.Point(103, 505);
+            this.label_longedge.Name = "label_longedge";
+            this.label_longedge.Size = new System.Drawing.Size(94, 20);
+            this.label_longedge.TabIndex = 7;
+            this.label_longedge.Text = "Hallo Welt :)";
             // 
             // LaserTabForm
             // 
@@ -149,5 +175,7 @@
         private System.Windows.Forms.Label hw_label;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Label label_shortedge;
+        private System.Windows.Forms.Label label_longedge;
     }
 }
