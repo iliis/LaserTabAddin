@@ -190,6 +190,8 @@ namespace LaserTabAddin
             TransientGeometry geom = m_inventorApplication.TransientGeometry;
             PartDocument document = m_inventorApplication.ActiveDocument as PartDocument;
             PartComponentDefinition def = document.ComponentDefinition;
+            UserParameters user_params = def.Parameters.UserParameters;
+            UnitsOfMeasure units = document.UnitsOfMeasure;
 
             // get and check selected faces
             ObjectsEnumerator JustSelectedEntities = m_selects.SelectedEntities;
@@ -200,6 +202,19 @@ namespace LaserTabAddin
                 return;
             }
 
+            // TODO: catch exception when invalid was is entered
+            UserParameter tab_user_constr;
+            if (m_dialog.mode_count.Checked)
+            {
+                tab_user_constr = user_params.AddByExpression("tab_count", m_dialog.tab_size_input.Text, UnitsTypeEnum.kUnitlessUnits);
+            }
+            else
+            {
+                tab_user_constr = user_params.AddByExpression("tab_size", m_dialog.tab_size_input.Text, UnitsTypeEnum.kDefaultDisplayLengthUnits);
+            }
+            
+
+
             int total_operations = JustSelectedEntities.Count;
 
             Edge[] long_edge = new Edge[total_operations];
@@ -208,6 +223,7 @@ namespace LaserTabAddin
             ExtrudeFeature[] extrusion = new ExtrudeFeature[total_operations];
             TwoPointDistanceDimConstraint[] tab_length_constr = new TwoPointDistanceDimConstraint[total_operations];
             TwoPointDistanceDimConstraint[] tab_widthdepth_constr = new TwoPointDistanceDimConstraint[total_operations];
+            TwoPointDistanceDimConstraint[] total_length_constr = new TwoPointDistanceDimConstraint[total_operations];
 
             // create extrusion feature for each face
             int i = 0;
@@ -315,7 +331,7 @@ namespace LaserTabAddin
                     P_short.Geometry, true);
 
                 // driven constraint of long dimenstion (determining number/size of tabs)
-                TwoPointDistanceDimConstraint constr_long = sketch.DimensionConstraints.AddTwoPointDistance(
+                total_length_constr[i] = sketch.DimensionConstraints.AddTwoPointDistance(
                     P_orig, P_long, DimensionOrientationEnum.kAlignedDim,
                     P_long.Geometry, true);
 
@@ -344,7 +360,20 @@ namespace LaserTabAddin
                 TwoPointDistanceDimConstraint tab_len_constraint2 = sketch.DimensionConstraints.AddTwoPointDistance(P_short, P_end2_sk, DimensionOrientationEnum.kAlignedDim, P_end2);
                 tab_length_constr[i] = tab_len_constraint1;
 
-                tab_len_constraint1.Parameter.Expression = string.Format("{0} / 10", constr_long.Parameter.Name);
+                // {0}: total length
+                // {1}: user input (count or length of single tab)
+                string expr;
+                if (m_dialog.mode_count.Checked)
+                {
+                    expr = "{0} / {1}";
+                }
+                else
+                {
+                    // TODO: take dropdown of >/</~ into account
+                    expr = "{0} / round({0}/{1})";
+                }
+
+                tab_len_constraint1.Parameter.Expression = string.Format(expr, total_length_constr[i].Parameter.Name, tab_user_constr.Name);
                 tab_len_constraint2.Parameter.Expression = tab_len_constraint1.Parameter.Name;
 
                 // create a rectangle based on these points
@@ -381,9 +410,12 @@ namespace LaserTabAddin
                 ObjectCollection col = m_inventorApplication.TransientObjects.CreateObjectCollection();
                 col.Add(extrusion[i]);
 
+                // TODO: is ceil() actually correct here?
+                string count_expr = string.Format("ceil({0} / {1} / 2)", total_length_constr[i].Parameter.Name, tab_length_constr[i].Parameter.Name);
+
                 RectangularPatternFeatureDefinition pattern_def =
                 document.ComponentDefinition.Features.RectangularPatternFeatures.CreateDefinition(
-                    col, long_edge[i], long_edge_dir[i], 10/2, tab_length_constr[i].Parameter.Name + "*2");
+                    col, long_edge[i], long_edge_dir[i], count_expr, tab_length_constr[i].Parameter.Name + "*2");
                 // TODO: we could use PatternSpacingType kFitToPathLength here...
 
                 RectangularPatternFeature rect_pattern =
