@@ -28,6 +28,8 @@ namespace LaserTabAddin
         private SelectEvents m_selects; // keeping a reference to the events objects seems to be crucial! (even tough it is part of m_interaction)
         private LaserTabForm m_dialog;
 
+        private ClientNodeResource m_browser_icon;
+
         /*
          * Modes:
          * - fixed number of tabs
@@ -69,19 +71,20 @@ namespace LaserTabAddin
             // Get the images from the resources.  They are stored as .Net images and the
             // PictureConverter class is used to convert them to IPictureDisp objects, which
             // the Inventor API requires. 
-            stdole.IPictureDisp icon_large = PictureConverter.ImageToPictureDisp(Properties.Resources.icon32);
+            stdole.IPictureDisp icon_large = PictureConverter.ImageToPictureDisp(Properties.Resources.ribbon_icon);
             stdole.IPictureDisp icon_small = PictureConverter.ImageToPictureDisp(Properties.Resources.icon16);
 
             // Create the button definition.
             m_buttonDef = controlDefs.AddButtonDefinition("make tabs", "UIRibbonSampleOne",
                                                  CommandTypesEnum.kNonShapeEditCmdType,
-                                                 "0defbf22-e302-4266-9bc9-fb80d5c8eb7e", "", "", icon_small, icon_large);
+                                                 "{0defbf22-e302-4266-9bc9-fb80d5c8eb7e}", "", "", icon_small, icon_large);
 
             // Call the function to add information to the user-interface.
             if (firstTime)
             {
                 CreateUserInterface();
                 //PrintRibbonNames();
+
             }
 
             // Connect to UI events to be able to handle a UI reset.
@@ -431,13 +434,53 @@ namespace LaserTabAddin
                 rect_pattern[i] =
                 document.ComponentDefinition.Features.RectangularPatternFeatures.AddByDefinition(pattern_def);
             }
-            transaction.End();
+            
 
             stop_selection();
 
+            Debug.Print("createing custom feature from {0} to {1}, total ops: {2}", all_sketches[0], rect_pattern[total_operations - 1], total_operations);
 
-            ClientFeatureDefinition feature_def = def.Features.ClientFeatures.CreateDefinition("LaserTab", all_sketches[0], rect_pattern[total_operations - 1]);
-            def.Features.ClientFeatures.Add(feature_def, "0defbf22-e302-4266-9bc9-fb80d5c8eb7e");
+            object start_element;
+            if (total_operations == 1)
+            {
+                // if there is only a single operation, the tree looks like this:
+                /*
+                 * - extrusion 1 (consumed sketch 1)
+                 * - pattern 1
+                 */
+                start_element = extrusion[0];
+            }
+            else
+            {
+                // if there are multiple operations, the sketch is not consumed by the extrusion
+                // and the tree looks like this:
+                /*
+                 * - sketch 1
+                 * - sketch 2
+                 * - extrusion 1
+                 * - extrusion 2
+                 * - pattern 1
+                 * - pattern 2
+                 */
+                start_element = all_sketches[0];
+            }
+
+            ClientFeatureDefinition feature_def = def.Features.ClientFeatures.CreateDefinition("LaserTab", start_element, rect_pattern[total_operations - 1]);
+            ClientFeature feature = def.Features.ClientFeatures.Add(feature_def, "{0defbf22-e302-4266-9bc9-fb80d5c8eb7e}");
+
+            // load the icon for our custom feature if not done so already
+            if (m_browser_icon == null)
+            {
+                stdole.IPictureDisp icon = PictureConverter.ImageToPictureDisp(Properties.Resources.browser_icon_16);
+                m_browser_icon = document.BrowserPanes.ClientNodeResources.Add("{0defbf22-e302-4266-9bc9-fb80d5c8eb7e}", -1, icon);
+            }
+
+            BrowserNode node = document.BrowserPanes[1].GetBrowserNodeFromObject(feature);
+            NativeBrowserNodeDefinition ndef = node.BrowserNodeDefinition as NativeBrowserNodeDefinition;
+            ndef.OverrideIcon = m_browser_icon;
+
+
+            transaction.End();
         }
 
         public void Deactivate()

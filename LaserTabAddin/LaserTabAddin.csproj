@@ -157,6 +157,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="browser_icon_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ribbon_icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

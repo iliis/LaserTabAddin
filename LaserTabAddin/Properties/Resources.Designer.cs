@@ -63,6 +63,16 @@ namespace LaserTabAddin.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap browser_icon_16 {
+            get {
+                object obj = ResourceManager.GetObject("browser_icon_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap icon {
             get {
                 object obj = ResourceManager.GetObject("icon", resourceCulture);
@@ -86,6 +96,16 @@ namespace LaserTabAddin.Properties {
         public static System.Drawing.Bitmap icon32 {
             get {
                 object obj = ResourceManager.GetObject("icon32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ribbon_icon {
+            get {
+                object obj = ResourceManager.GetObject("ribbon_icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
