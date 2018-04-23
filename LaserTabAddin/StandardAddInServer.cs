@@ -202,8 +202,24 @@ namespace LaserTabAddin
                 return;
             }
 
-            // TODO: catch exception when invalid was is entered
-            UserParameter tab_user_constr;
+            foreach (Object _f in JustSelectedEntities)
+            {
+                Face f = _f as Face;
+                if (f == null)
+                {
+                    m_inventorApplication.ErrorManager.Show("Somehow, you managed to select something that isn't a face. This should not happen, please report it.", true, false);
+                    return;
+                }
+
+                if (f.Edges.Count != 4)
+                {
+                    m_inventorApplication.ErrorManager.Show("Please only select rectangular faces.", true, false);
+                    return;
+                }
+            }
+
+                // TODO: catch exception when invalid was is entered
+                UserParameter tab_user_constr;
             if (m_dialog.mode_count.Checked)
             {
                 tab_user_constr = user_params.AddByExpression("tab_count", m_dialog.tab_size_input.Text, UnitsTypeEnum.kUnitlessUnits);
@@ -225,22 +241,14 @@ namespace LaserTabAddin
             TwoPointDistanceDimConstraint[] tab_widthdepth_constr = new TwoPointDistanceDimConstraint[total_operations];
             TwoPointDistanceDimConstraint[] total_length_constr = new TwoPointDistanceDimConstraint[total_operations];
 
+
+            Transaction transaction = m_inventorApplication.TransactionManager.StartTransaction(m_inventorApplication.ActiveDocument, "LaserTab");
+
             // create extrusion feature for each face
             int i = 0;
             foreach (Object _f in JustSelectedEntities)
             {
                 Face f = _f as Face;
-                if (f == null)
-                {
-                    m_inventorApplication.ErrorManager.Show("Somehow, you managed to select something that isn't a face. This should not happen, please report it.", true, false);
-                    return;
-                }
-
-                if (f.Edges.Count != 4)
-                {
-                    m_inventorApplication.ErrorManager.Show("Please only select rectangular faces.", true, false);
-                    return;
-                }
 
                 // TODO: make sure active document is a partDocument and ActiveEditObject is not a sketch (should be also a partDocument?)
                 // TODO: wrap it all into a ClientFeature
@@ -421,7 +429,7 @@ namespace LaserTabAddin
                 RectangularPatternFeature rect_pattern =
                 document.ComponentDefinition.Features.RectangularPatternFeatures.AddByDefinition(pattern_def);
             }
-
+            transaction.End();
 
             stop_selection();
         }
