@@ -15,6 +15,8 @@ namespace LaserTabAddin
         public LaserTabForm()
         {
             InitializeComponent();
+            
+            tab_size_mode.SelectedIndex = 2;
         }
 
         public void setLabel(string text)
@@ -49,12 +51,13 @@ namespace LaserTabAddin
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-
+            parity_even.Enabled = force_parity.Checked;
+            parity_odd.Enabled  = force_parity.Checked;
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-
+            tab_size_mode.Visible = mode_size.Checked;
         }
 
         private void button_ok_Click(object sender, EventArgs e)
@@ -65,6 +68,16 @@ namespace LaserTabAddin
         private void button1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
+        {
+            tab_depth_input.Enabled = !auto_depth.Checked;
         }
     }
 }

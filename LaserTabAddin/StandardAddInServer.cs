@@ -39,8 +39,9 @@ namespace LaserTabAddin
          * depth:
          * - same as thickness
          * - custom: [input field]
+         * - add/remove
          * 
-         * - flip/invert
+         * - invert
          * 
          */
 
@@ -410,9 +411,23 @@ namespace LaserTabAddin
             // do extrusions
             for (i = 0; i < total_operations; i++)
             {
+
+                string dist_expr;
+                if (m_dialog.auto_depth.Checked)
+                {
+                    // use thickness of material
+                    dist_expr = tab_widthdepth_constr[i].Parameter.Name;
+                }
+                else
+                {
+                    // use user input
+                    // TODO: validate!
+                    dist_expr = m_dialog.tab_depth_input.Text;
+                }
+
                 // extrude said rectangle
                 ExtrudeDefinition extrusion_def = document.ComponentDefinition.Features.ExtrudeFeatures.CreateExtrudeDefinition(profile[i], PartFeatureOperationEnum.kCutOperation);
-                extrusion_def.SetDistanceExtent(1, PartFeatureExtentDirectionEnum.kNegativeExtentDirection);
+                extrusion_def.SetDistanceExtent(dist_expr, PartFeatureExtentDirectionEnum.kNegativeExtentDirection);
                 extrusion[i] = document.ComponentDefinition.Features.ExtrudeFeatures.Add(extrusion_def);
             }
 
@@ -438,7 +453,7 @@ namespace LaserTabAddin
 
             stop_selection();
 
-            Debug.Print("createing custom feature from {0} to {1}, total ops: {2}", all_sketches[0], rect_pattern[total_operations - 1], total_operations);
+            // create custom feature (called a ClientFeature by Inventor) containing all our sketches, extrusions and patterns in a single node
 
             object start_element;
             if (total_operations == 1)
@@ -475,10 +490,8 @@ namespace LaserTabAddin
                 m_browser_icon = document.BrowserPanes.ClientNodeResources.Add("{0defbf22-e302-4266-9bc9-fb80d5c8eb7e}", -1, icon);
             }
 
-            BrowserNode node = document.BrowserPanes[1].GetBrowserNodeFromObject(feature);
-            NativeBrowserNodeDefinition ndef = node.BrowserNodeDefinition as NativeBrowserNodeDefinition;
+            NativeBrowserNodeDefinition ndef = document.BrowserPanes[1].GetBrowserNodeFromObject(feature).BrowserNodeDefinition as NativeBrowserNodeDefinition;
             ndef.OverrideIcon = m_browser_icon;
-
 
             transaction.End();
         }

@@ -45,6 +45,10 @@
             this.tab_size_mode = new System.Windows.Forms.ComboBox();
             this.tab_size_input = new System.Windows.Forms.TextBox();
             this.button_invert = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tab_depth_input = new System.Windows.Forms.TextBox();
+            this.auto_depth = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
@@ -52,6 +56,8 @@
             this.flowLayoutPanel3.SuspendLayout();
             this.tab_input_group.SuspendLayout();
             this.flowLayoutPanel4.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.flowLayoutPanel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // button_cancel
@@ -87,6 +93,7 @@
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tab_input_group, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.button_invert, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.groupBox2, 0, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -171,7 +178,8 @@
             this.groupBox1.Size = new System.Drawing.Size(489, 84);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "driving mode";
+            this.groupBox1.Text = "tab size driving mode";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // mode_count
             // 
@@ -231,6 +239,7 @@
             // 
             // tab_size_mode
             // 
+            this.tab_size_mode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.tab_size_mode.FormattingEnabled = true;
             this.tab_size_mode.Items.AddRange(new object[] {
             ">=",
@@ -262,6 +271,50 @@
             this.button_invert.UseVisualStyleBackColor = true;
             this.button_invert.Click += new System.EventHandler(this.button1_Click);
             // 
+            // groupBox2
+            // 
+            this.groupBox2.AutoSize = true;
+            this.groupBox2.Controls.Add(this.flowLayoutPanel5);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(3, 273);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(489, 84);
+            this.groupBox2.TabIndex = 12;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "tab depth";
+            // 
+            // flowLayoutPanel5
+            // 
+            this.flowLayoutPanel5.Controls.Add(this.auto_depth);
+            this.flowLayoutPanel5.Controls.Add(this.tab_depth_input);
+            this.flowLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel5.Location = new System.Drawing.Point(3, 22);
+            this.flowLayoutPanel5.Name = "flowLayoutPanel5";
+            this.flowLayoutPanel5.Size = new System.Drawing.Size(483, 59);
+            this.flowLayoutPanel5.TabIndex = 0;
+            // 
+            // tab_depth_input
+            // 
+            this.tab_depth_input.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tab_depth_input.Enabled = false;
+            this.tab_depth_input.Location = new System.Drawing.Point(235, 3);
+            this.tab_depth_input.Name = "tab_depth_input";
+            this.tab_depth_input.Size = new System.Drawing.Size(224, 26);
+            this.tab_depth_input.TabIndex = 0;
+            // 
+            // auto_depth
+            // 
+            this.auto_depth.AutoSize = true;
+            this.auto_depth.Checked = true;
+            this.auto_depth.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.auto_depth.Location = new System.Drawing.Point(3, 3);
+            this.auto_depth.Name = "auto_depth";
+            this.auto_depth.Size = new System.Drawing.Size(226, 24);
+            this.auto_depth.TabIndex = 1;
+            this.auto_depth.Text = "same as material thickness";
+            this.auto_depth.UseVisualStyleBackColor = true;
+            this.auto_depth.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
+            // 
             // LaserTabForm
             // 
             this.AcceptButton = this.button_ok;
@@ -287,6 +340,9 @@
             this.tab_input_group.ResumeLayout(false);
             this.flowLayoutPanel4.ResumeLayout(false);
             this.flowLayoutPanel4.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.flowLayoutPanel5.ResumeLayout(false);
+            this.flowLayoutPanel5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -309,5 +365,9 @@
         public System.Windows.Forms.Button button_ok;
         public System.Windows.Forms.Button button_cancel;
         public System.Windows.Forms.Button button_invert;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
+        public System.Windows.Forms.CheckBox auto_depth;
+        public System.Windows.Forms.TextBox tab_depth_input;
     }
 }
