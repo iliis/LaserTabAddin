@@ -235,12 +235,13 @@ namespace LaserTabAddin
 
             Edge[] long_edge = new Edge[total_operations];
             bool[] long_edge_dir = new bool[total_operations];
+            PlanarSketch[] all_sketches = new PlanarSketch[total_operations];
             Profile[] profile = new Profile[total_operations];
             ExtrudeFeature[] extrusion = new ExtrudeFeature[total_operations];
             TwoPointDistanceDimConstraint[] tab_length_constr = new TwoPointDistanceDimConstraint[total_operations];
             TwoPointDistanceDimConstraint[] tab_widthdepth_constr = new TwoPointDistanceDimConstraint[total_operations];
             TwoPointDistanceDimConstraint[] total_length_constr = new TwoPointDistanceDimConstraint[total_operations];
-
+            RectangularPatternFeature[] rect_pattern = new RectangularPatternFeature[total_operations];
 
             Transaction transaction = m_inventorApplication.TransactionManager.StartTransaction(m_inventorApplication.ActiveDocument, "LaserTab");
 
@@ -398,6 +399,7 @@ namespace LaserTabAddin
                 rect.Add(sketch.SketchLines.AddByTwoPoints(P_short, P_orig));
                 
                 profile[i] = sketch.Profiles.AddForSolid(false, rect);
+                all_sketches[i] = sketch;
 
                 i++;
             }
@@ -426,12 +428,16 @@ namespace LaserTabAddin
                     col, long_edge[i], long_edge_dir[i], count_expr, tab_length_constr[i].Parameter.Name + "*2");
                 // TODO: we could use PatternSpacingType kFitToPathLength here...
 
-                RectangularPatternFeature rect_pattern =
+                rect_pattern[i] =
                 document.ComponentDefinition.Features.RectangularPatternFeatures.AddByDefinition(pattern_def);
             }
             transaction.End();
 
             stop_selection();
+
+
+            ClientFeatureDefinition feature_def = def.Features.ClientFeatures.CreateDefinition("LaserTab", all_sketches[0], rect_pattern[total_operations - 1]);
+            def.Features.ClientFeatures.Add(feature_def, "0defbf22-e302-4266-9bc9-fb80d5c8eb7e");
         }
 
         public void Deactivate()
