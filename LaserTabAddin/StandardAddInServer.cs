@@ -28,6 +28,20 @@ namespace LaserTabAddin
         private SelectEvents m_selects; // keeping a reference to the events objects seems to be crucial! (even tough it is part of m_interaction)
         private LaserTabForm m_dialog;
 
+        /*
+         * Modes:
+         * - fixed number of tabs
+         * - tab size should be >=, <= or as close as possible to $x
+         * - force parity (even/odd)
+         * 
+         * depth:
+         * - same as thickness
+         * - custom: [input field]
+         * 
+         * - flip/invert
+         * 
+         */
+
         public StandardAddInServer()
         {
         }
@@ -113,7 +127,7 @@ namespace LaserTabAddin
             m_selects = m_interaction.SelectEvents;
             m_selects.ClearSelectionFilter();
             m_selects.AddSelectionFilter(SelectionFilterEnum.kPartFacePlanarFilter);
-            m_selects.SingleSelectEnabled = true;
+            //m_selects.SingleSelectEnabled = true;
             m_selects.MouseMoveEnabled = false; // recommended for performance if not used
             m_selects.Enabled = true; // ???
             // no idea what these event sinks are and why we need them...
@@ -126,6 +140,7 @@ namespace LaserTabAddin
             m_dialog.setLabel("select a face");
             m_dialog.Show(new InventorMainFrame(m_inventorApplication.MainFrameHWND));
             m_dialog.FormClosed += M_dialog_FormClosed;
+            m_dialog.button_ok.Click += Button_ok_Click;
 
             m_interaction.Start();
 
@@ -161,66 +176,74 @@ namespace LaserTabAddin
             return length;
         }
 
+
+
         private void SelectEvents_OnSelect(ObjectsEnumerator JustSelectedEntities, SelectionDeviceEnum SelectionDevice, Point ModelPosition, Point2d ViewPosition, Inventor.View View)
         {
-            if (JustSelectedEntities.Count != 1)
+
+        }
+
+
+        private void Button_ok_Click(object sender, EventArgs e)
+        {
+            // references to some useful objects
+            TransientGeometry geom = m_inventorApplication.TransientGeometry;
+            PartDocument document = m_inventorApplication.ActiveDocument as PartDocument;
+            PartComponentDefinition def = document.ComponentDefinition;
+
+            // get and check selected faces
+            ObjectsEnumerator JustSelectedEntities = m_selects.SelectedEntities;
+
+            if (JustSelectedEntities.Count == 0)
             {
-                // TODO: use proper error popup (use ErrorManager)
-                m_dialog.setLabel(string.Format("Wut? You selected {} objects.", JustSelectedEntities.Count));
+                m_inventorApplication.ErrorManager.Show("Select at least one planar, rectangular face.", true, false);
                 return;
             }
-            
-            if (JustSelectedEntities[1] is Face)
+
+            int total_operations = JustSelectedEntities.Count;
+
+            Edge[] long_edge = new Edge[total_operations];
+            bool[] long_edge_dir = new bool[total_operations];
+            Profile[] profile = new Profile[total_operations];
+            ExtrudeFeature[] extrusion = new ExtrudeFeature[total_operations];
+            TwoPointDistanceDimConstraint[] tab_length_constr = new TwoPointDistanceDimConstraint[total_operations];
+            TwoPointDistanceDimConstraint[] tab_widthdepth_constr = new TwoPointDistanceDimConstraint[total_operations];
+
+            // create extrusion feature for each face
+            int i = 0;
+            foreach (Object _f in JustSelectedEntities)
             {
-                Face f = JustSelectedEntities[1] as Face;
-                m_dialog.setLabel(string.Format("selected: {0}, area = {1}, edges = {2}", f.InternalName, f.Evaluator.Area, f.Edges.Count));
+                Face f = _f as Face;
+                if (f == null)
+                {
+                    m_inventorApplication.ErrorManager.Show("Somehow, you managed to select something that isn't a face. This should not happen, please report it.", true, false);
+                    return;
+                }
 
+                if (f.Edges.Count != 4)
+                {
+                    m_inventorApplication.ErrorManager.Show("Please only select rectangular faces.", true, false);
+                    return;
+                }
 
-                // TODO: check that f.Edges.Count == 4 and that all of them have geometry type kLineSegmentCurve
                 // TODO: make sure active document is a partDocument and ActiveEditObject is not a sketch (should be also a partDocument?)
                 // TODO: wrap it all into a ClientFeature
                 // TODO: maybe also wrap it in a Transaction?
 
-                
-                Edge short_edge, long_edge;
-                
+
                 if (getEdgeLength(f.Edges[1]) > getEdgeLength(f.Edges[2]))
                 {
-                    short_edge = f.Edges[2];
-                    long_edge  = f.Edges[1];
+                    long_edge[i] = f.Edges[1];
                 }
                 else
                 {
-                    short_edge = f.Edges[1];
-                    long_edge  = f.Edges[2];
+                    long_edge[i] = f.Edges[2];
                 }
-
-                m_dialog.setEdgeInfo(getEdgeLength(short_edge).ToString(), getEdgeLength(long_edge).ToString());
-                
 
                 // create sketch
-                TransientGeometry geom = m_inventorApplication.TransientGeometry;
-                PartDocument document = m_inventorApplication.ActiveDocument as PartDocument;
-                PartComponentDefinition def = document.ComponentDefinition;
+
                 PlanarSketch sketch = def.Sketches.Add(f, true); // project existing geometry
-
-                //PlanarSketch sketch = def.Sketches.AddWithOrientation(f, long_edge, true, true, long_edge.StartVertex, true);
-
-                foreach (SketchPoint point in sketch.SketchPoints)
-                {
-                    Debug.Print("point at X: {0}, Y: {1}", point.Geometry.X, point.Geometry.Y);
-                }
-
-                foreach (SketchLine line in sketch.SketchLines)
-                {
-                    Debug.Print("line from {0}, {1} to {2}, {3}, length = {4}", line.StartSketchPoint.Geometry.X, line.StartSketchPoint.Geometry.Y, line.EndSketchPoint.Geometry.X, line.EndSketchPoint.Geometry.Y, line.Length);
-                    //SketchConstraintsEnumerator constr = line.Constraints[0];
-                    foreach (object constr in line.Constraints)
-                    {
-                        Debug.Print(" > with constraint: {0}, type = {1}", constr, constr.GetType());
-                    }
-                }
-
+                                                                 //PlanarSketch sketch = def.Sketches.AddWithOrientation(f, long_edge, true, true, long_edge.StartVertex, true);
 
                 // figure out orientation
                 SketchLine short_line, long_line, long_line2;
@@ -265,29 +288,39 @@ namespace LaserTabAddin
                     P_long = long_line.StartSketchPoint;
                 }
 
+                // remember wheter 'long_edge' starts or stops at 'P_orig' (which is important for the direction of the rectangular pattern)
+                Vertices vert_tmp = P_orig.ReferencedEntity as Vertices;
+                Debug.Assert(vert_tmp != null);
+                Debug.Assert(vert_tmp.Count == 1);
+                long_edge_dir[i] = long_edge[i].StartVertex == vert_tmp[1];
+
+
 
                 // appearantly, Profiles.AddForSolid() doesn't like lines that are made entirely out of projected points... (maybe because the line already exists?)
                 SketchPoint P_orig_proj = P_orig, P_short_proj = P_short;
 
                 P_short = sketch.SketchPoints.Add(P_short_proj.Geometry, false);
-                P_orig  = sketch.SketchPoints.Add(P_orig_proj.Geometry, false);
+                P_orig = sketch.SketchPoints.Add(P_orig_proj.Geometry, false);
 
-                sketch.GeometricConstraints.AddCoincident((SketchEntity) P_short, (SketchEntity) P_short_proj);
+                sketch.GeometricConstraints.AddCoincident((SketchEntity)P_short, (SketchEntity)P_short_proj);
                 sketch.GeometricConstraints.AddCoincident((SketchEntity)P_orig, (SketchEntity)P_orig_proj);
 
                 // create dimension constraints
 
                 // TODO: calculate better position for text label
-                TwoPointDistanceDimConstraint constr_short = sketch.DimensionConstraints.AddTwoPointDistance(
+
+                // driven constraint of short dimension (determining thickness and depth of tab)
+                tab_widthdepth_constr[i] = sketch.DimensionConstraints.AddTwoPointDistance(
                     P_orig, P_short, DimensionOrientationEnum.kAlignedDim,
                     P_short.Geometry, true);
 
+                // driven constraint of long dimenstion (determining number/size of tabs)
                 TwoPointDistanceDimConstraint constr_long = sketch.DimensionConstraints.AddTwoPointDistance(
                     P_orig, P_long, DimensionOrientationEnum.kAlignedDim,
                     P_long.Geometry, true);
-                
-                Debug.Print("constraint short: {0} = {1}", constr_short.Parameter.Expression, constr_short.Parameter.Value);
-                Debug.Print("constraint long: {0} = {1}", constr_long.Parameter.Expression, constr_long.Parameter.Value);
+
+                //Debug.Print("constraint short: {0} = {1}", constr_short.Parameter.Expression, constr_short.Parameter.Value);
+                //Debug.Print("constraint long: {0} = {1}", constr_long.Parameter.Expression, constr_long.Parameter.Value);
 
                 // create endpoint for rectangle
                 Point2d P_end2 = P_short.Geometry.Copy();
@@ -304,11 +337,13 @@ namespace LaserTabAddin
 
                 // constrain endpoints properly
                 sketch.GeometricConstraints.AddCoincident((SketchEntity)long_line2, (SketchEntity)P_end2_sk);
-                sketch.GeometricConstraints.AddCoincident((SketchEntity)long_line,  (SketchEntity)P_end1_sk);
+                sketch.GeometricConstraints.AddCoincident((SketchEntity)long_line, (SketchEntity)P_end1_sk);
 
-                TwoPointDistanceDimConstraint tab_len_constraint1 = sketch.DimensionConstraints.AddTwoPointDistance(P_orig,  P_end1_sk, DimensionOrientationEnum.kAlignedDim, P_end1);
+                // constraint for tab length (twice, once for each side of the rectangle)
+                TwoPointDistanceDimConstraint tab_len_constraint1 = sketch.DimensionConstraints.AddTwoPointDistance(P_orig, P_end1_sk, DimensionOrientationEnum.kAlignedDim, P_end1);
                 TwoPointDistanceDimConstraint tab_len_constraint2 = sketch.DimensionConstraints.AddTwoPointDistance(P_short, P_end2_sk, DimensionOrientationEnum.kAlignedDim, P_end2);
-                
+                tab_length_constr[i] = tab_len_constraint1;
+
                 tab_len_constraint1.Parameter.Expression = string.Format("{0} / 10", constr_long.Parameter.Name);
                 tab_len_constraint2.Parameter.Expression = tab_len_constraint1.Parameter.Name;
 
@@ -318,89 +353,45 @@ namespace LaserTabAddin
                 // this is cumbersome, as the third point is transient and therefore the rectangle would have to be constrained afterwards
                 //SketchEntitiesEnumerator rect = sketch.SketchLines.AddAsThreePointRectangle(P_orig, P_short, P_end);
 
-                
-                SketchLine l1 = sketch.SketchLines.AddByTwoPoints(P_orig, P_end1_sk);
-                SketchLine l2 = sketch.SketchLines.AddByTwoPoints(P_end1_sk, P_end2_sk);
-                SketchLine l3 = sketch.SketchLines.AddByTwoPoints(P_end2_sk, P_short);
-                SketchLine l4 = sketch.SketchLines.AddByTwoPoints(P_short, P_orig);
+
                 ObjectCollection rect = m_inventorApplication.TransientObjects.CreateObjectCollection();
-                rect.Add(l1);
-                rect.Add(l2);
-                rect.Add(l3);
-                rect.Add(l4);
+                rect.Add(sketch.SketchLines.AddByTwoPoints(P_orig, P_end1_sk));
+                rect.Add(sketch.SketchLines.AddByTwoPoints(P_end1_sk, P_end2_sk));
+                rect.Add(sketch.SketchLines.AddByTwoPoints(P_end2_sk, P_short));
+                rect.Add(sketch.SketchLines.AddByTwoPoints(P_short, P_orig));
+                
+                profile[i] = sketch.Profiles.AddForSolid(false, rect);
 
-                Debug.Assert(l1.EndSketchPoint == l2.StartSketchPoint);
-                Debug.Assert(l2.EndSketchPoint == l3.StartSketchPoint);
-                Debug.Assert(l3.EndSketchPoint == l4.StartSketchPoint);
-                Debug.Assert(l4.EndSketchPoint == l1.StartSketchPoint);
+                i++;
+            }
 
-                Debug.Print("got {0} objects in collection", rect.Count);
-                foreach (Object o in rect)
-                {
-                    Debug.Print("object: {0}", o);
-                    SketchLine line = o as SketchLine;
-                    Debug.Print("  -> line from {0}, {1} to {2}, {3}, length = {4}", line.StartSketchPoint.Geometry.X, line.StartSketchPoint.Geometry.Y, line.EndSketchPoint.Geometry.X, line.EndSketchPoint.Geometry.Y, line.Length);
-                }
-
-
-
-                Profile profile = sketch.Profiles.AddForSolid(false, rect);
-
+            // do extrusions
+            for (i = 0; i < total_operations; i++)
+            {
                 // extrude said rectangle
-                ExtrudeDefinition extrusion_def = document.ComponentDefinition.Features.ExtrudeFeatures.CreateExtrudeDefinition(profile, PartFeatureOperationEnum.kCutOperation);
+                ExtrudeDefinition extrusion_def = document.ComponentDefinition.Features.ExtrudeFeatures.CreateExtrudeDefinition(profile[i], PartFeatureOperationEnum.kCutOperation);
                 extrusion_def.SetDistanceExtent(1, PartFeatureExtentDirectionEnum.kNegativeExtentDirection);
-                ExtrudeFeature extrusion = document.ComponentDefinition.Features.ExtrudeFeatures.Add(extrusion_def);
+                extrusion[i] = document.ComponentDefinition.Features.ExtrudeFeatures.Add(extrusion_def);
+            }
 
+            // do rectangular patterns
+            for (i = 0; i < total_operations; i++)
+            {
                 // now repeat that extrusion
                 ObjectCollection col = m_inventorApplication.TransientObjects.CreateObjectCollection();
-                col.Add(extrusion);
-                // TODO: figure out correct direction for pattern here
+                col.Add(extrusion[i]);
+
                 RectangularPatternFeatureDefinition pattern_def =
                 document.ComponentDefinition.Features.RectangularPatternFeatures.CreateDefinition(
-                    col, long_edge, false, 10/2, tab_len_constraint1.Parameter.Name + "*2");
+                    col, long_edge[i], long_edge_dir[i], 10/2, tab_length_constr[i].Parameter.Name + "*2");
                 // TODO: we could use PatternSpacingType kFitToPathLength here...
 
                 RectangularPatternFeature rect_pattern =
                 document.ComponentDefinition.Features.RectangularPatternFeatures.AddByDefinition(pattern_def);
-
-                /*
-                // create lines
-                SketchLines lines = sketch.SketchLines;
-                lines.AddByTwoPoints(sketch.SketchPoints[1], sketch.SketchPoints[2]);
-                lines.AddByTwoPoints(sketch.SketchPoints[2], sketch.SketchPoints[3]);
-                lines.AddByTwoPoints(sketch.SketchPoints[3], sketch.SketchPoints[1]);
-
-                // create profile
-                Profile profile = sketch.Profiles.AddForSolid();
-
-                // create extrusion
-                ExtrudeDefinition extrusion_def = document.ComponentDefinition.Features.ExtrudeFeatures.CreateExtrudeDefinition(profile, PartFeatureOperationEnum.kCutOperation);
-                extrusion_def.SetDistanceExtent(1, PartFeatureExtentDirectionEnum.kNegativeExtentDirection);
-                ExtrudeFeature extrusion = document.ComponentDefinition.Features.ExtrudeFeatures.Add(extrusion_def);
-                */
-
-                /*
-                Debug.Print("selected a face, area: {0}", f.Evaluator.Area);
-                foreach (Edge e in f.Edges)
-                {
-                    Debug.Print("got edge: geometry type = {0}", e.GeometryType);
-                    
-                    LineSegment seg = e.Geometry as LineSegment;
-                    double min_parm, max_parm;
-                    e.Evaluator.GetParamExtents(out min_parm, out max_parm);
-                    Debug.Print("    min parm: {0}, max parm: {1}", min_parm, max_parm);
-
-                    double edge_len;
-                    e.Evaluator.GetLengthAtParam(min_parm, max_parm, out edge_len);
-
-                    Debug.Print("    length: {0} cm", edge_len)
-                    
-                }*/
             }
-            else
-            {
-                m_dialog.setLabel("Please select a face. This should not happen!");
-            }
+
+
+            stop_selection();
         }
 
         public void Deactivate()

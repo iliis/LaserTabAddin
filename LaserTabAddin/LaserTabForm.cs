@@ -19,13 +19,12 @@ namespace LaserTabAddin
 
         public void setLabel(string text)
         {
-            hw_label.Text = text;
+            
         }
 
         public void setEdgeInfo(string shortedge, string longedge)
         {
-            label_shortedge.Text = shortedge;
-            label_longedge.Text = longedge;
+            
         }
 
         private void LaserTabForm_Load(object sender, EventArgs e)
@@ -39,6 +38,31 @@ namespace LaserTabAddin
         }
 
         private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_ok_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
         {
 
         }
