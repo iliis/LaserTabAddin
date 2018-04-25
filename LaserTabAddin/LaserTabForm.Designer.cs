@@ -32,14 +32,14 @@
             this.button_ok = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.force_parity = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.force_parity = new System.Windows.Forms.CheckBox();
             this.parity_even = new System.Windows.Forms.RadioButton();
             this.parity_odd = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.mode_count = new System.Windows.Forms.RadioButton();
             this.mode_size = new System.Windows.Forms.RadioButton();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.tab_input_group = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.tab_size_mode = new System.Windows.Forms.ComboBox();
@@ -47,8 +47,11 @@
             this.button_invert = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tab_depth_input = new System.Windows.Forms.TextBox();
             this.auto_depth = new System.Windows.Forms.CheckBox();
+            this.tab_depth_input = new System.Windows.Forms.TextBox();
+            this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
+            this.extrude_positive = new System.Windows.Forms.RadioButton();
+            this.extrude_negative = new System.Windows.Forms.RadioButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
@@ -58,6 +61,7 @@
             this.flowLayoutPanel4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.flowLayoutPanel5.SuspendLayout();
+            this.flowLayoutPanel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // button_cancel
@@ -94,6 +98,7 @@
             this.tableLayoutPanel1.Controls.Add(this.tab_input_group, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.button_invert, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.groupBox2, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel6, 0, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -123,17 +128,6 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(489, 42);
             this.flowLayoutPanel1.TabIndex = 6;
             // 
-            // force_parity
-            // 
-            this.force_parity.AutoSize = true;
-            this.force_parity.Location = new System.Drawing.Point(3, 3);
-            this.force_parity.Name = "force_parity";
-            this.force_parity.Size = new System.Drawing.Size(117, 24);
-            this.force_parity.TabIndex = 7;
-            this.force_parity.Text = "force parity:";
-            this.force_parity.UseVisualStyleBackColor = true;
-            this.force_parity.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.Controls.Add(this.force_parity);
@@ -144,6 +138,17 @@
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(489, 84);
             this.flowLayoutPanel2.TabIndex = 8;
+            // 
+            // force_parity
+            // 
+            this.force_parity.AutoSize = true;
+            this.force_parity.Location = new System.Drawing.Point(3, 3);
+            this.force_parity.Name = "force_parity";
+            this.force_parity.Size = new System.Drawing.Size(117, 24);
+            this.force_parity.TabIndex = 7;
+            this.force_parity.Text = "force parity:";
+            this.force_parity.UseVisualStyleBackColor = true;
+            this.force_parity.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // parity_even
             // 
@@ -181,6 +186,16 @@
             this.groupBox1.Text = "tab size driving mode";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.Controls.Add(this.mode_count);
+            this.flowLayoutPanel3.Controls.Add(this.mode_size);
+            this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 22);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(483, 59);
+            this.flowLayoutPanel3.TabIndex = 2;
+            // 
             // mode_count
             // 
             this.mode_count.AutoSize = true;
@@ -203,16 +218,6 @@
             this.mode_size.TabStop = true;
             this.mode_size.Text = "tab size";
             this.mode_size.UseVisualStyleBackColor = true;
-            // 
-            // flowLayoutPanel3
-            // 
-            this.flowLayoutPanel3.Controls.Add(this.mode_count);
-            this.flowLayoutPanel3.Controls.Add(this.mode_size);
-            this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 22);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(483, 59);
-            this.flowLayoutPanel3.TabIndex = 2;
             // 
             // tab_input_group
             // 
@@ -293,15 +298,6 @@
             this.flowLayoutPanel5.Size = new System.Drawing.Size(483, 59);
             this.flowLayoutPanel5.TabIndex = 0;
             // 
-            // tab_depth_input
-            // 
-            this.tab_depth_input.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tab_depth_input.Enabled = false;
-            this.tab_depth_input.Location = new System.Drawing.Point(235, 3);
-            this.tab_depth_input.Name = "tab_depth_input";
-            this.tab_depth_input.Size = new System.Drawing.Size(224, 26);
-            this.tab_depth_input.TabIndex = 0;
-            // 
             // auto_depth
             // 
             this.auto_depth.AutoSize = true;
@@ -314,6 +310,49 @@
             this.auto_depth.Text = "same as material thickness";
             this.auto_depth.UseVisualStyleBackColor = true;
             this.auto_depth.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
+            // 
+            // tab_depth_input
+            // 
+            this.tab_depth_input.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tab_depth_input.Enabled = false;
+            this.tab_depth_input.Location = new System.Drawing.Point(235, 3);
+            this.tab_depth_input.Name = "tab_depth_input";
+            this.tab_depth_input.Size = new System.Drawing.Size(224, 26);
+            this.tab_depth_input.TabIndex = 0;
+            this.tab_depth_input.Text = "5 mm";
+            this.tab_depth_input.TextChanged += new System.EventHandler(this.tab_depth_input_TextChanged);
+            // 
+            // flowLayoutPanel6
+            // 
+            this.flowLayoutPanel6.Controls.Add(this.extrude_positive);
+            this.flowLayoutPanel6.Controls.Add(this.extrude_negative);
+            this.flowLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel6.Location = new System.Drawing.Point(3, 453);
+            this.flowLayoutPanel6.Name = "flowLayoutPanel6";
+            this.flowLayoutPanel6.Size = new System.Drawing.Size(489, 84);
+            this.flowLayoutPanel6.TabIndex = 13;
+            // 
+            // extrude_positive
+            // 
+            this.extrude_positive.AutoSize = true;
+            this.extrude_positive.Checked = true;
+            this.extrude_positive.Location = new System.Drawing.Point(3, 3);
+            this.extrude_positive.Name = "extrude_positive";
+            this.extrude_positive.Size = new System.Drawing.Size(61, 24);
+            this.extrude_positive.TabIndex = 0;
+            this.extrude_positive.TabStop = true;
+            this.extrude_positive.Text = "add";
+            this.extrude_positive.UseVisualStyleBackColor = true;
+            // 
+            // extrude_negative
+            // 
+            this.extrude_negative.AutoSize = true;
+            this.extrude_negative.Location = new System.Drawing.Point(70, 3);
+            this.extrude_negative.Name = "extrude_negative";
+            this.extrude_negative.Size = new System.Drawing.Size(92, 24);
+            this.extrude_negative.TabIndex = 1;
+            this.extrude_negative.Text = "subtract";
+            this.extrude_negative.UseVisualStyleBackColor = true;
             // 
             // LaserTabForm
             // 
@@ -343,6 +382,8 @@
             this.groupBox2.ResumeLayout(false);
             this.flowLayoutPanel5.ResumeLayout(false);
             this.flowLayoutPanel5.PerformLayout();
+            this.flowLayoutPanel6.ResumeLayout(false);
+            this.flowLayoutPanel6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -369,5 +410,8 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
         public System.Windows.Forms.CheckBox auto_depth;
         public System.Windows.Forms.TextBox tab_depth_input;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;
+        public System.Windows.Forms.RadioButton extrude_negative;
+        public System.Windows.Forms.RadioButton extrude_positive;
     }
 }

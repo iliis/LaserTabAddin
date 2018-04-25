@@ -19,16 +19,6 @@ namespace LaserTabAddin
             tab_size_mode.SelectedIndex = 2;
         }
 
-        public void setLabel(string text)
-        {
-            
-        }
-
-        public void setEdgeInfo(string shortedge, string longedge)
-        {
-            
-        }
-
         private void LaserTabForm_Load(object sender, EventArgs e)
         {
 
@@ -78,6 +68,11 @@ namespace LaserTabAddin
         private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
         {
             tab_depth_input.Enabled = !auto_depth.Checked;
+        }
+
+        private void tab_depth_input_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -27,6 +27,7 @@ namespace LaserTabAddin
         private InteractionEvents m_interaction;
         private SelectEvents m_selects; // keeping a reference to the events objects seems to be crucial! (even tough it is part of m_interaction)
         private LaserTabForm m_dialog;
+        private BrowserPanesEvents m_browser_events;
 
         private ClientNodeResource m_browser_icon;
 
@@ -137,17 +138,31 @@ namespace LaserTabAddin
             // no idea what these event sinks are and why we need them...
             m_selects.OnSelect += new Inventor.SelectEventsSink_OnSelectEventHandler(this.SelectEvents_OnSelect);
             m_interaction.OnTerminate += new Inventor.InteractionEventsSink_OnTerminateEventHandler(this.M_interaction_OnTerminate);
-            
+
+
+
+
+            // TODO: only do this once per document!
+            // TODO: why doesn't it work at all??!?!
+            m_browser_events = m_inventorApplication.ActiveDocument.BrowserPanes.BrowserPanesEvents;
+            m_browser_events.OnBrowserNodeActivate  += new Inventor.BrowserPanesSink_OnBrowserNodeActivateEventHandler(this.BrowserPanesEvents_OnBrowserNodeActivate);
+            m_browser_events.OnBrowserNodeLabelEdit += new Inventor.BrowserPanesSink_OnBrowserNodeLabelEditEventHandler(M_browser_events_OnBrowserNodeLabelEdit);
 
             m_dialog = new LaserTabForm();
-
-            m_dialog.setLabel("select a face");
+            
             m_dialog.Show(new InventorMainFrame(m_inventorApplication.MainFrameHWND));
             m_dialog.FormClosed += M_dialog_FormClosed;
             m_dialog.button_ok.Click += Button_ok_Click;
 
             m_interaction.Start();
 
+
+        }
+
+        private void M_browser_events_OnBrowserNodeLabelEdit(object BrowserNodeDefinition, string NewLabel, EventTimingEnum BeforeOrAfter, NameValueMap Context, out HandlingCodeEnum HandlingCode)
+        {
+            MessageBox.Show(string.Format("label edited to {0}", NewLabel));
+            HandlingCode = HandlingCodeEnum.kEventHandled;
         }
 
         private void M_interaction_OnTerminate()
@@ -185,6 +200,53 @@ namespace LaserTabAddin
         private void SelectEvents_OnSelect(ObjectsEnumerator JustSelectedEntities, SelectionDeviceEnum SelectionDevice, Point ModelPosition, Point2d ViewPosition, Inventor.View View)
         {
 
+        }
+
+
+        /*
+         * Assume we have a long rectangle (i.e. NOT a square), let's get a point in one corner and the two points adjoint to that by a long/short edge
+         */
+        private void determine_orientation(Face f, out Edge long_edge, out Edge short_edge, out Vertex vert_origin, out Vertex vert_long_end, out Vertex vert_short_end)
+        {
+            Debug.Assert(f.Edges.Count == 4);
+            
+            if (getEdgeLength(f.Edges[1]) > getEdgeLength(f.Edges[2]))
+            {
+                long_edge = f.Edges[1];
+                short_edge = f.Edges[2];
+            }
+            else
+            {
+                long_edge = f.Edges[2];
+                short_edge = f.Edges[1];
+            }
+
+            if (long_edge.StartVertex == short_edge.StartVertex)
+            {
+                vert_origin = long_edge.StartVertex;
+                vert_long_end = long_edge.StopVertex;
+                vert_short_end = short_edge.StopVertex;
+            }
+            else if (long_edge.StartVertex == short_edge.StopVertex)
+            {
+                vert_origin = long_edge.StartVertex;
+                vert_long_end = long_edge.StopVertex;
+                vert_short_end = short_edge.StartVertex;
+            }
+            else if (long_edge.StopVertex == short_edge.StartVertex)
+            {
+                vert_origin = long_edge.StopVertex;
+                vert_long_end = long_edge.StartVertex;
+                vert_short_end = short_edge.StopVertex;
+            }
+            else
+            {
+                Debug.Assert(long_edge.StopVertex == short_edge.StopVertex);
+
+                vert_origin = long_edge.StopVertex;
+                vert_long_end = long_edge.StartVertex;
+                vert_short_end = short_edge.StopVertex;
+            }
         }
 
 
@@ -237,7 +299,7 @@ namespace LaserTabAddin
 
             int total_operations = JustSelectedEntities.Count;
 
-            Edge[] long_edge = new Edge[total_operations];
+            WorkAxis[] extrusion_dir = new WorkAxis[total_operations];
             bool[] long_edge_dir = new bool[total_operations];
             PlanarSketch[] all_sketches = new PlanarSketch[total_operations];
             Profile[] profile = new Profile[total_operations];
@@ -259,69 +321,32 @@ namespace LaserTabAddin
                 // TODO: wrap it all into a ClientFeature
                 // TODO: maybe also wrap it in a Transaction?
 
+                
 
-                if (getEdgeLength(f.Edges[1]) > getEdgeLength(f.Edges[2]))
-                {
-                    long_edge[i] = f.Edges[1];
-                }
-                else
-                {
-                    long_edge[i] = f.Edges[2];
-                }
+
+
+
+
 
                 // create sketch
 
-                PlanarSketch sketch = def.Sketches.Add(f, true); // project existing geometry
-                                                                 //PlanarSketch sketch = def.Sketches.AddWithOrientation(f, long_edge, true, true, long_edge.StartVertex, true);
+                PlanarSketch sketch = def.Sketches.Add(f, false); // don't project anything
+                //PlanarSketch sketch = def.Sketches.Add(f, true); // project existing geometry
+                //PlanarSketch sketch = def.Sketches.AddWithOrientation(f, long_edge, true, true, long_edge.StartVertex, true);
 
-                // figure out orientation
-                SketchLine short_line, long_line, long_line2;
-                if (sketch.SketchLines[1].Length < sketch.SketchLines[2].Length)
-                {
-                    short_line = sketch.SketchLines[1];
-                    long_line = sketch.SketchLines[2];
-                    long_line2 = sketch.SketchLines[4]; // opposite of other long line
-                }
-                else
-                {
-                    short_line = sketch.SketchLines[2];
-                    long_line = sketch.SketchLines[1];
-                    long_line2 = sketch.SketchLines[3];
-                }
-
-                SketchPoint P_orig, P_long, P_short;
-                if (short_line.EndSketchPoint == long_line.StartSketchPoint)
-                {
-                    P_orig = short_line.EndSketchPoint;
-                    P_short = short_line.StartSketchPoint;
-                    P_long = long_line.EndSketchPoint;
-                }
-                else if (short_line.StartSketchPoint == long_line.EndSketchPoint)
-                {
-                    P_orig = short_line.StartSketchPoint;
-                    P_short = short_line.EndSketchPoint;
-                    P_long = long_line.StartSketchPoint;
-                }
-                else if (short_line.StartSketchPoint == long_line.StartSketchPoint)
-                {
-                    P_orig = short_line.StartSketchPoint;
-                    P_short = short_line.EndSketchPoint;
-                    P_long = long_line.EndSketchPoint;
-                }
-                else
-                {
-                    Debug.Assert(short_line.EndSketchPoint == long_line.EndSketchPoint);
-
-                    P_orig = short_line.EndSketchPoint;
-                    P_short = short_line.StartSketchPoint;
-                    P_long = long_line.StartSketchPoint;
-                }
+                Edge short_edge, long_edge;
+                Vertex vert_origin, vert_short_end, vert_long_end;
+                determine_orientation(f, out long_edge, out short_edge, out vert_origin, out vert_long_end, out vert_short_end);
 
                 // remember wheter 'long_edge' starts or stops at 'P_orig' (which is important for the direction of the rectangular pattern)
-                Vertices vert_tmp = P_orig.ReferencedEntity as Vertices;
-                Debug.Assert(vert_tmp != null);
-                Debug.Assert(vert_tmp.Count == 1);
-                long_edge_dir[i] = long_edge[i].StartVertex == vert_tmp[1];
+                long_edge_dir[i] = long_edge.StartVertex == vert_origin;
+                extrusion_dir[i] = def.WorkAxes.AddByLine(long_edge, true);
+
+                // project important points
+                SketchPoint P_orig  = sketch.AddByProjectingEntity(vert_origin) as SketchPoint;
+                SketchPoint P_long  = sketch.AddByProjectingEntity(vert_long_end) as SketchPoint;
+                SketchPoint P_short = sketch.AddByProjectingEntity(vert_short_end) as SketchPoint;
+                
 
 
 
@@ -365,8 +390,8 @@ namespace LaserTabAddin
                 SketchPoint P_end2_sk = sketch.SketchPoints.Add(P_end2, false);
 
                 // constrain endpoints properly
-                sketch.GeometricConstraints.AddCoincident((SketchEntity)long_line2, (SketchEntity)P_end2_sk);
-                sketch.GeometricConstraints.AddCoincident((SketchEntity)long_line, (SketchEntity)P_end1_sk);
+                //sketch.GeometricConstraints.AddCoincident((SketchEntity)long_line2, (SketchEntity)P_end2_sk);
+                //sketch.GeometricConstraints.AddCoincident((SketchEntity)long_line, (SketchEntity)P_end1_sk);
 
                 // constraint for tab length (twice, once for each side of the rectangle)
                 TwoPointDistanceDimConstraint tab_len_constraint1 = sketch.DimensionConstraints.AddTwoPointDistance(P_orig, P_end1_sk, DimensionOrientationEnum.kAlignedDim, P_end1);
@@ -401,7 +426,10 @@ namespace LaserTabAddin
                 rect.Add(sketch.SketchLines.AddByTwoPoints(P_end1_sk, P_end2_sk));
                 rect.Add(sketch.SketchLines.AddByTwoPoints(P_end2_sk, P_short));
                 rect.Add(sketch.SketchLines.AddByTwoPoints(P_short, P_orig));
-                
+
+                sketch.GeometricConstraints.AddCoincident((SketchEntity) rect[1], (SketchEntity) P_long);
+                sketch.GeometricConstraints.AddParallel((SketchEntity)rect[1], (SketchEntity)rect[3]);
+
                 profile[i] = sketch.Profiles.AddForSolid(false, rect);
                 all_sketches[i] = sketch;
 
@@ -425,9 +453,22 @@ namespace LaserTabAddin
                     dist_expr = m_dialog.tab_depth_input.Text;
                 }
 
+                PartFeatureExtentDirectionEnum dir;
+                PartFeatureOperationEnum op;
+                if (m_dialog.extrude_positive.Checked)
+                {
+                    dir = PartFeatureExtentDirectionEnum.kPositiveExtentDirection;
+                    op = PartFeatureOperationEnum.kJoinOperation;
+                }
+                else
+                {
+                    dir = PartFeatureExtentDirectionEnum.kNegativeExtentDirection;
+                    op = PartFeatureOperationEnum.kCutOperation;
+                }
+
                 // extrude said rectangle
-                ExtrudeDefinition extrusion_def = document.ComponentDefinition.Features.ExtrudeFeatures.CreateExtrudeDefinition(profile[i], PartFeatureOperationEnum.kCutOperation);
-                extrusion_def.SetDistanceExtent(dist_expr, PartFeatureExtentDirectionEnum.kNegativeExtentDirection);
+                ExtrudeDefinition extrusion_def = document.ComponentDefinition.Features.ExtrudeFeatures.CreateExtrudeDefinition(profile[i], op);
+                extrusion_def.SetDistanceExtent(dist_expr, dir);
                 extrusion[i] = document.ComponentDefinition.Features.ExtrudeFeatures.Add(extrusion_def);
             }
 
@@ -439,15 +480,27 @@ namespace LaserTabAddin
                 col.Add(extrusion[i]);
 
                 // TODO: is ceil() actually correct here?
-                string count_expr = string.Format("ceil({0} / {1} / 2)", total_length_constr[i].Parameter.Name, tab_length_constr[i].Parameter.Name);
+                string count_expr = string.Format("ceil(round({0} / {1}) / 2)", total_length_constr[i].Parameter.Name, tab_length_constr[i].Parameter.Name);
 
                 RectangularPatternFeatureDefinition pattern_def =
                 document.ComponentDefinition.Features.RectangularPatternFeatures.CreateDefinition(
-                    col, long_edge[i], long_edge_dir[i], count_expr, tab_length_constr[i].Parameter.Name + "*2");
+                    col, extrusion_dir[i], long_edge_dir[i], count_expr, tab_length_constr[i].Parameter.Name + "*2");
                 // TODO: we could use PatternSpacingType kFitToPathLength here...
 
-                rect_pattern[i] =
-                document.ComponentDefinition.Features.RectangularPatternFeatures.AddByDefinition(pattern_def);
+                try
+                {
+
+                    rect_pattern[i] =
+                    document.ComponentDefinition.Features.RectangularPatternFeatures.AddByDefinition(pattern_def);
+                }
+                catch (Exception ex)
+                {
+
+                    Debug.Print("rect pattern failed: {0}", ex.Message);
+                    Debug.Print("long edge: {0}, dir: {1}, count_expr = '{2}', len = '{3}'", extrusion_dir[i], long_edge_dir[i], count_expr, tab_length_constr[i].Parameter.Name + "*2");
+                    transaction.End();
+                    return;
+                }
             }
             
 
@@ -482,7 +535,7 @@ namespace LaserTabAddin
 
             ClientFeatureDefinition feature_def = def.Features.ClientFeatures.CreateDefinition("LaserTab", start_element, rect_pattern[total_operations - 1]);
             ClientFeature feature = def.Features.ClientFeatures.Add(feature_def, "{0defbf22-e302-4266-9bc9-fb80d5c8eb7e}");
-
+            
             // load the icon for our custom feature if not done so already
             if (m_browser_icon == null)
             {
@@ -494,6 +547,14 @@ namespace LaserTabAddin
             ndef.OverrideIcon = m_browser_icon;
 
             transaction.End();
+        }
+
+        private void BrowserPanesEvents_OnBrowserNodeActivate(object BrowserNodeDefinition, NameValueMap Context, out HandlingCodeEnum HandlingCode)
+        {
+            MessageBox.Show("you selected a node!");
+            BrowserNodeDefinition def = BrowserNodeDefinition as BrowserNodeDefinition;
+            Debug.Print("activated a browser node! {0}", def.Label);
+            HandlingCode = HandlingCodeEnum.kEventHandled;
         }
 
         public void Deactivate()
