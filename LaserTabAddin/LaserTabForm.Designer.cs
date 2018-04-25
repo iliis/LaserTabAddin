@@ -30,45 +30,35 @@
         {
             this.button_cancel = new System.Windows.Forms.Button();
             this.button_ok = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.force_parity = new System.Windows.Forms.CheckBox();
             this.parity_even = new System.Windows.Forms.RadioButton();
             this.parity_odd = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.mode_count = new System.Windows.Forms.RadioButton();
             this.mode_size = new System.Windows.Forms.RadioButton();
             this.tab_input_group = new System.Windows.Forms.GroupBox();
-            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.tab_size_mode = new System.Windows.Forms.ComboBox();
             this.tab_size_input = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
             this.auto_depth = new System.Windows.Forms.CheckBox();
             this.tab_depth_input = new System.Windows.Forms.TextBox();
-            this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.extrude_positive = new System.Windows.Forms.RadioButton();
             this.extrude_negative = new System.Windows.Forms.RadioButton();
             this.offset = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
             this.tab_input_group.SuspendLayout();
-            this.flowLayoutPanel4.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.flowLayoutPanel5.SuspendLayout();
-            this.flowLayoutPanel6.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // button_cancel
             // 
             this.button_cancel.AutoSize = true;
             this.button_cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button_cancel.Location = new System.Drawing.Point(381, 3);
+            this.button_cancel.Location = new System.Drawing.Point(336, 385);
             this.button_cancel.Name = "button_cancel";
             this.button_cancel.Size = new System.Drawing.Size(105, 30);
             this.button_cancel.TabIndex = 3;
@@ -79,7 +69,7 @@
             // button_ok
             // 
             this.button_ok.AutoSize = true;
-            this.button_ok.Location = new System.Drawing.Point(299, 3);
+            this.button_ok.Location = new System.Drawing.Point(447, 385);
             this.button_ok.Name = "button_ok";
             this.button_ok.Size = new System.Drawing.Size(76, 30);
             this.button_ok.TabIndex = 2;
@@ -87,62 +77,10 @@
             this.button_ok.UseVisualStyleBackColor = true;
             this.button_ok.Click += new System.EventHandler(this.button_ok_Click);
             // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 7);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.tab_input_group, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.groupBox2, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel6, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.offset, 0, 2);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 8;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28571F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(495, 678);
-            this.tableLayoutPanel1.TabIndex = 7;
-            this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel1.Controls.Add(this.button_cancel);
-            this.flowLayoutPanel1.Controls.Add(this.button_ok);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 633);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(489, 42);
-            this.flowLayoutPanel1.TabIndex = 6;
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.Controls.Add(this.force_parity);
-            this.flowLayoutPanel2.Controls.Add(this.parity_even);
-            this.flowLayoutPanel2.Controls.Add(this.parity_odd);
-            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 363);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(489, 84);
-            this.flowLayoutPanel2.TabIndex = 8;
-            // 
             // force_parity
             // 
             this.force_parity.AutoSize = true;
-            this.force_parity.Location = new System.Drawing.Point(3, 3);
+            this.force_parity.Location = new System.Drawing.Point(6, 25);
             this.force_parity.Name = "force_parity";
             this.force_parity.Size = new System.Drawing.Size(117, 24);
             this.force_parity.TabIndex = 7;
@@ -153,7 +91,7 @@
             // parity_even
             // 
             this.parity_even.AutoSize = true;
-            this.parity_even.Location = new System.Drawing.Point(126, 3);
+            this.parity_even.Location = new System.Drawing.Point(129, 25);
             this.parity_even.Name = "parity_even";
             this.parity_even.Size = new System.Drawing.Size(68, 24);
             this.parity_even.TabIndex = 8;
@@ -164,7 +102,7 @@
             // 
             this.parity_odd.AutoSize = true;
             this.parity_odd.Checked = true;
-            this.parity_odd.Location = new System.Drawing.Point(200, 3);
+            this.parity_odd.Location = new System.Drawing.Point(203, 25);
             this.parity_odd.Name = "parity_odd";
             this.parity_odd.Size = new System.Drawing.Size(61, 24);
             this.parity_odd.TabIndex = 9;
@@ -174,32 +112,20 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.AutoSize = true;
-            this.groupBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.groupBox1.Controls.Add(this.flowLayoutPanel3);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Controls.Add(this.mode_size);
+            this.groupBox1.Controls.Add(this.mode_count);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(489, 84);
+            this.groupBox1.Size = new System.Drawing.Size(256, 62);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "tab size driving mode";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
-            // flowLayoutPanel3
-            // 
-            this.flowLayoutPanel3.Controls.Add(this.mode_count);
-            this.flowLayoutPanel3.Controls.Add(this.mode_size);
-            this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 22);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(483, 59);
-            this.flowLayoutPanel3.TabIndex = 2;
-            // 
             // mode_count
             // 
             this.mode_count.AutoSize = true;
-            this.mode_count.Location = new System.Drawing.Point(3, 3);
+            this.mode_count.Location = new System.Drawing.Point(6, 25);
             this.mode_count.Name = "mode_count";
             this.mode_count.Size = new System.Drawing.Size(141, 24);
             this.mode_count.TabIndex = 0;
@@ -211,7 +137,7 @@
             // 
             this.mode_size.AutoSize = true;
             this.mode_size.Checked = true;
-            this.mode_size.Location = new System.Drawing.Point(150, 3);
+            this.mode_size.Location = new System.Drawing.Point(153, 25);
             this.mode_size.Name = "mode_size";
             this.mode_size.Size = new System.Drawing.Size(89, 24);
             this.mode_size.TabIndex = 1;
@@ -221,26 +147,14 @@
             // 
             // tab_input_group
             // 
-            this.tab_input_group.AutoSize = true;
-            this.tab_input_group.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tab_input_group.Controls.Add(this.flowLayoutPanel4);
-            this.tab_input_group.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tab_input_group.Location = new System.Drawing.Point(3, 93);
+            this.tab_input_group.Controls.Add(this.tab_size_input);
+            this.tab_input_group.Controls.Add(this.tab_size_mode);
+            this.tab_input_group.Location = new System.Drawing.Point(12, 80);
             this.tab_input_group.Name = "tab_input_group";
-            this.tab_input_group.Size = new System.Drawing.Size(489, 84);
+            this.tab_input_group.Size = new System.Drawing.Size(511, 68);
             this.tab_input_group.TabIndex = 10;
             this.tab_input_group.TabStop = false;
             this.tab_input_group.Text = "tab count/size";
-            // 
-            // flowLayoutPanel4
-            // 
-            this.flowLayoutPanel4.Controls.Add(this.tab_size_mode);
-            this.flowLayoutPanel4.Controls.Add(this.tab_size_input);
-            this.flowLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel4.Location = new System.Drawing.Point(3, 22);
-            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(483, 59);
-            this.flowLayoutPanel4.TabIndex = 0;
             // 
             // tab_size_mode
             // 
@@ -250,48 +164,36 @@
             ">=",
             "<=",
             "approx."});
-            this.tab_size_mode.Location = new System.Drawing.Point(3, 3);
+            this.tab_size_mode.Location = new System.Drawing.Point(15, 25);
             this.tab_size_mode.Name = "tab_size_mode";
             this.tab_size_mode.Size = new System.Drawing.Size(121, 28);
             this.tab_size_mode.TabIndex = 0;
             // 
             // tab_size_input
             // 
-            this.tab_size_input.Dock = System.Windows.Forms.DockStyle.Left;
-            this.tab_size_input.Location = new System.Drawing.Point(130, 3);
+            this.tab_size_input.Location = new System.Drawing.Point(142, 27);
             this.tab_size_input.Name = "tab_size_input";
-            this.tab_size_input.Size = new System.Drawing.Size(329, 26);
+            this.tab_size_input.Size = new System.Drawing.Size(363, 26);
             this.tab_size_input.TabIndex = 1;
             this.tab_size_input.Text = "10 mm";
             // 
             // groupBox2
             // 
-            this.groupBox2.AutoSize = true;
-            this.groupBox2.Controls.Add(this.flowLayoutPanel5);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(3, 273);
+            this.groupBox2.Controls.Add(this.tab_depth_input);
+            this.groupBox2.Controls.Add(this.auto_depth);
+            this.groupBox2.Location = new System.Drawing.Point(12, 154);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(489, 84);
+            this.groupBox2.Size = new System.Drawing.Size(511, 84);
             this.groupBox2.TabIndex = 12;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "tab depth";
-            // 
-            // flowLayoutPanel5
-            // 
-            this.flowLayoutPanel5.Controls.Add(this.auto_depth);
-            this.flowLayoutPanel5.Controls.Add(this.tab_depth_input);
-            this.flowLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel5.Location = new System.Drawing.Point(3, 22);
-            this.flowLayoutPanel5.Name = "flowLayoutPanel5";
-            this.flowLayoutPanel5.Size = new System.Drawing.Size(483, 59);
-            this.flowLayoutPanel5.TabIndex = 0;
             // 
             // auto_depth
             // 
             this.auto_depth.AutoSize = true;
             this.auto_depth.Checked = true;
             this.auto_depth.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.auto_depth.Location = new System.Drawing.Point(3, 3);
+            this.auto_depth.Location = new System.Drawing.Point(6, 25);
             this.auto_depth.Name = "auto_depth";
             this.auto_depth.Size = new System.Drawing.Size(226, 24);
             this.auto_depth.TabIndex = 1;
@@ -301,30 +203,19 @@
             // 
             // tab_depth_input
             // 
-            this.tab_depth_input.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tab_depth_input.Enabled = false;
-            this.tab_depth_input.Location = new System.Drawing.Point(235, 3);
+            this.tab_depth_input.Location = new System.Drawing.Point(238, 23);
             this.tab_depth_input.Name = "tab_depth_input";
-            this.tab_depth_input.Size = new System.Drawing.Size(224, 26);
+            this.tab_depth_input.Size = new System.Drawing.Size(267, 26);
             this.tab_depth_input.TabIndex = 0;
             this.tab_depth_input.Text = "5 mm";
             this.tab_depth_input.TextChanged += new System.EventHandler(this.tab_depth_input_TextChanged);
-            // 
-            // flowLayoutPanel6
-            // 
-            this.flowLayoutPanel6.Controls.Add(this.extrude_positive);
-            this.flowLayoutPanel6.Controls.Add(this.extrude_negative);
-            this.flowLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel6.Location = new System.Drawing.Point(3, 453);
-            this.flowLayoutPanel6.Name = "flowLayoutPanel6";
-            this.flowLayoutPanel6.Size = new System.Drawing.Size(489, 84);
-            this.flowLayoutPanel6.TabIndex = 13;
             // 
             // extrude_positive
             // 
             this.extrude_positive.AutoSize = true;
             this.extrude_positive.Checked = true;
-            this.extrude_positive.Location = new System.Drawing.Point(3, 3);
+            this.extrude_positive.Location = new System.Drawing.Point(6, 25);
             this.extrude_positive.Name = "extrude_positive";
             this.extrude_positive.Size = new System.Drawing.Size(61, 24);
             this.extrude_positive.TabIndex = 0;
@@ -335,7 +226,7 @@
             // extrude_negative
             // 
             this.extrude_negative.AutoSize = true;
-            this.extrude_negative.Location = new System.Drawing.Point(70, 3);
+            this.extrude_negative.Location = new System.Drawing.Point(73, 25);
             this.extrude_negative.Name = "extrude_negative";
             this.extrude_negative.Size = new System.Drawing.Size(92, 24);
             this.extrude_negative.TabIndex = 1;
@@ -345,12 +236,35 @@
             // offset
             // 
             this.offset.AutoSize = true;
-            this.offset.Location = new System.Drawing.Point(3, 183);
+            this.offset.Location = new System.Drawing.Point(286, 37);
             this.offset.Name = "offset";
             this.offset.Size = new System.Drawing.Size(76, 24);
             this.offset.TabIndex = 14;
             this.offset.Text = "offset";
             this.offset.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.force_parity);
+            this.groupBox3.Controls.Add(this.parity_even);
+            this.groupBox3.Controls.Add(this.parity_odd);
+            this.groupBox3.Location = new System.Drawing.Point(12, 244);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(511, 67);
+            this.groupBox3.TabIndex = 15;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "parity";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.extrude_positive);
+            this.groupBox4.Controls.Add(this.extrude_negative);
+            this.groupBox4.Location = new System.Drawing.Point(12, 317);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(511, 62);
+            this.groupBox4.TabIndex = 16;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "extrusion direction";
             // 
             // LaserTabForm
             // 
@@ -358,58 +272,54 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button_cancel;
-            this.ClientSize = new System.Drawing.Size(495, 678);
-            this.Controls.Add(this.tableLayoutPanel1);
-            this.HelpButton = true;
+            this.ClientSize = new System.Drawing.Size(535, 427);
+            this.Controls.Add(this.button_cancel);
+            this.Controls.Add(this.groupBox4);
+            this.Controls.Add(this.button_ok);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.tab_input_group);
+            this.Controls.Add(this.offset);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "LaserTabForm";
             this.ShowInTaskbar = false;
             this.Text = "LaserTabForm";
             this.Load += new System.EventHandler(this.LaserTabForm_Load);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
-            this.flowLayoutPanel3.ResumeLayout(false);
-            this.flowLayoutPanel3.PerformLayout();
+            this.groupBox1.PerformLayout();
             this.tab_input_group.ResumeLayout(false);
-            this.flowLayoutPanel4.ResumeLayout(false);
-            this.flowLayoutPanel4.PerformLayout();
+            this.tab_input_group.PerformLayout();
             this.groupBox2.ResumeLayout(false);
-            this.flowLayoutPanel5.ResumeLayout(false);
-            this.flowLayoutPanel5.PerformLayout();
-            this.flowLayoutPanel6.ResumeLayout(false);
-            this.flowLayoutPanel6.PerformLayout();
+            this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         public System.Windows.Forms.CheckBox force_parity;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         public System.Windows.Forms.RadioButton parity_even;
         public System.Windows.Forms.RadioButton parity_odd;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         public System.Windows.Forms.RadioButton mode_size;
         public System.Windows.Forms.RadioButton mode_count;
         public System.Windows.Forms.GroupBox tab_input_group;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         public System.Windows.Forms.ComboBox tab_size_mode;
         public System.Windows.Forms.TextBox tab_size_input;
         public System.Windows.Forms.Button button_ok;
         public System.Windows.Forms.Button button_cancel;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
         public System.Windows.Forms.CheckBox auto_depth;
         public System.Windows.Forms.TextBox tab_depth_input;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;
         public System.Windows.Forms.RadioButton extrude_negative;
         public System.Windows.Forms.RadioButton extrude_positive;
         public System.Windows.Forms.CheckBox offset;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox groupBox4;
     }
 }
