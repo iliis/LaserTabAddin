@@ -44,7 +44,6 @@
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.tab_size_mode = new System.Windows.Forms.ComboBox();
             this.tab_size_input = new System.Windows.Forms.TextBox();
-            this.button_invert = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
             this.auto_depth = new System.Windows.Forms.CheckBox();
@@ -52,6 +51,7 @@
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
             this.extrude_positive = new System.Windows.Forms.RadioButton();
             this.extrude_negative = new System.Windows.Forms.RadioButton();
+            this.offset = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
@@ -96,9 +96,9 @@
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tab_input_group, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.button_invert, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.groupBox2, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel6, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.offset, 0, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -264,18 +264,6 @@
             this.tab_size_input.TabIndex = 1;
             this.tab_size_input.Text = "10 mm";
             // 
-            // button_invert
-            // 
-            this.button_invert.AutoSize = true;
-            this.button_invert.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.button_invert.Location = new System.Drawing.Point(3, 183);
-            this.button_invert.Name = "button_invert";
-            this.button_invert.Size = new System.Drawing.Size(57, 30);
-            this.button_invert.TabIndex = 11;
-            this.button_invert.Text = "invert";
-            this.button_invert.UseVisualStyleBackColor = true;
-            this.button_invert.Click += new System.EventHandler(this.button1_Click);
-            // 
             // groupBox2
             // 
             this.groupBox2.AutoSize = true;
@@ -354,6 +342,16 @@
             this.extrude_negative.Text = "subtract";
             this.extrude_negative.UseVisualStyleBackColor = true;
             // 
+            // offset
+            // 
+            this.offset.AutoSize = true;
+            this.offset.Location = new System.Drawing.Point(3, 183);
+            this.offset.Name = "offset";
+            this.offset.Size = new System.Drawing.Size(76, 24);
+            this.offset.TabIndex = 14;
+            this.offset.Text = "offset";
+            this.offset.UseVisualStyleBackColor = true;
+            // 
             // LaserTabForm
             // 
             this.AcceptButton = this.button_ok;
@@ -405,7 +403,6 @@
         public System.Windows.Forms.TextBox tab_size_input;
         public System.Windows.Forms.Button button_ok;
         public System.Windows.Forms.Button button_cancel;
-        public System.Windows.Forms.Button button_invert;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
         public System.Windows.Forms.CheckBox auto_depth;
@@ -413,5 +410,6 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel6;
         public System.Windows.Forms.RadioButton extrude_negative;
         public System.Windows.Forms.RadioButton extrude_positive;
+        public System.Windows.Forms.CheckBox offset;
     }
 }

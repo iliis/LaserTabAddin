@@ -77,7 +77,7 @@ namespace LaserTabAddin
             stdole.IPictureDisp icon_small = PictureConverter.ImageToPictureDisp(Properties.Resources.icon16);
 
             // Create the button definition.
-            m_buttonDef = controlDefs.AddButtonDefinition("make tabs", "UIRibbonSampleOne",
+            m_buttonDef = controlDefs.AddButtonDefinition("Tabs", "UIRibbonSampleOne",
                                                  CommandTypesEnum.kNonShapeEditCmdType,
                                                  "{0defbf22-e302-4266-9bc9-fb80d5c8eb7e}", "", "", icon_small, icon_large);
 
@@ -346,22 +346,7 @@ namespace LaserTabAddin
                 SketchPoint P_orig  = sketch.AddByProjectingEntity(vert_origin) as SketchPoint;
                 SketchPoint P_long  = sketch.AddByProjectingEntity(vert_long_end) as SketchPoint;
                 SketchPoint P_short = sketch.AddByProjectingEntity(vert_short_end) as SketchPoint;
-                
 
-
-
-                // appearantly, Profiles.AddForSolid() doesn't like lines that are made entirely out of projected points... (maybe because the line already exists?)
-                SketchPoint P_orig_proj = P_orig, P_short_proj = P_short;
-
-                P_short = sketch.SketchPoints.Add(P_short_proj.Geometry, false);
-                P_orig = sketch.SketchPoints.Add(P_orig_proj.Geometry, false);
-
-                sketch.GeometricConstraints.AddCoincident((SketchEntity)P_short, (SketchEntity)P_short_proj);
-                sketch.GeometricConstraints.AddCoincident((SketchEntity)P_orig, (SketchEntity)P_orig_proj);
-
-                // create dimension constraints
-
-                // TODO: calculate better position for text label
 
                 // driven constraint of short dimension (determining thickness and depth of tab)
                 tab_widthdepth_constr[i] = sketch.DimensionConstraints.AddTwoPointDistance(
@@ -372,6 +357,21 @@ namespace LaserTabAddin
                 total_length_constr[i] = sketch.DimensionConstraints.AddTwoPointDistance(
                     P_orig, P_long, DimensionOrientationEnum.kAlignedDim,
                     P_long.Geometry, true);
+
+
+
+                // appearantly, Profiles.AddForSolid() doesn't like lines that are made entirely out of projected points... (maybe because the line already exists?)
+                SketchPoint P_orig_proj = P_orig, P_short_proj = P_short;
+
+                P_short = sketch.SketchPoints.Add(P_short_proj.Geometry, false);
+                P_orig = sketch.SketchPoints.Add(P_orig_proj.Geometry, false);
+
+
+                // create dimension constraints
+
+                // TODO: calculate better position for text label
+
+                
 
                 //Debug.Print("constraint short: {0} = {1}", constr_short.Parameter.Expression, constr_short.Parameter.Value);
                 //Debug.Print("constraint long: {0} = {1}", constr_long.Parameter.Expression, constr_long.Parameter.Value);
@@ -394,7 +394,7 @@ namespace LaserTabAddin
                 //sketch.GeometricConstraints.AddCoincident((SketchEntity)long_line, (SketchEntity)P_end1_sk);
 
                 // constraint for tab length (twice, once for each side of the rectangle)
-                TwoPointDistanceDimConstraint tab_len_constraint1 = sketch.DimensionConstraints.AddTwoPointDistance(P_orig, P_end1_sk, DimensionOrientationEnum.kAlignedDim, P_end1);
+                TwoPointDistanceDimConstraint tab_len_constraint1 = sketch.DimensionConstraints.AddTwoPointDistance(P_orig,  P_end1_sk, DimensionOrientationEnum.kAlignedDim, P_end1);
                 TwoPointDistanceDimConstraint tab_len_constraint2 = sketch.DimensionConstraints.AddTwoPointDistance(P_short, P_end2_sk, DimensionOrientationEnum.kAlignedDim, P_end2);
                 tab_length_constr[i] = tab_len_constraint1;
 
@@ -426,6 +426,23 @@ namespace LaserTabAddin
                 rect.Add(sketch.SketchLines.AddByTwoPoints(P_end1_sk, P_end2_sk));
                 rect.Add(sketch.SketchLines.AddByTwoPoints(P_end2_sk, P_short));
                 rect.Add(sketch.SketchLines.AddByTwoPoints(P_short, P_orig));
+
+                // constrain rectangle
+
+                if (m_dialog.offset.Checked)
+                {
+                    sketch.GeometricConstraints.AddCoincident((SketchEntity)rect[1], (SketchEntity)P_orig_proj);
+                    sketch.GeometricConstraints.AddCoincident((SketchEntity)rect[3], (SketchEntity)P_short_proj);
+                    sketch.GeometricConstraints.AddPerpendicular((SketchEntity)rect[1], (SketchEntity)rect[2]);
+                    
+                    TwoPointDistanceDimConstraint offset_dist = sketch.DimensionConstraints.AddTwoPointDistance(P_orig, P_orig_proj, DimensionOrientationEnum.kAlignedDim, P_orig_proj.Geometry);
+                    offset_dist.Parameter.Expression = tab_len_constraint1.Parameter.Name;
+                }
+                else
+                {
+                    sketch.GeometricConstraints.AddCoincident((SketchEntity)P_short, (SketchEntity)P_short_proj);
+                    sketch.GeometricConstraints.AddCoincident((SketchEntity)P_orig, (SketchEntity)P_orig_proj);
+                }
 
                 sketch.GeometricConstraints.AddCoincident((SketchEntity) rect[1], (SketchEntity) P_long);
                 sketch.GeometricConstraints.AddParallel((SketchEntity)rect[1], (SketchEntity)rect[3]);
@@ -480,7 +497,9 @@ namespace LaserTabAddin
                 col.Add(extrusion[i]);
 
                 // TODO: is ceil() actually correct here?
-                string count_expr = string.Format("ceil(round({0} / {1}) / 2)", total_length_constr[i].Parameter.Name, tab_length_constr[i].Parameter.Name);
+                string offset = (m_dialog.offset.Checked ? "1" : "0");
+                string count_expr = string.Format("ceil(round({0} / {1} - {2}) / 2)", total_length_constr[i].Parameter.Name, tab_length_constr[i].Parameter.Name, offset);
+                
 
                 RectangularPatternFeatureDefinition pattern_def =
                 document.ComponentDefinition.Features.RectangularPatternFeatures.CreateDefinition(
@@ -532,7 +551,7 @@ namespace LaserTabAddin
                  */
                 start_element = all_sketches[0];
             }
-
+            
             ClientFeatureDefinition feature_def = def.Features.ClientFeatures.CreateDefinition("LaserTab", start_element, rect_pattern[total_operations - 1]);
             ClientFeature feature = def.Features.ClientFeatures.Add(feature_def, "{0defbf22-e302-4266-9bc9-fb80d5c8eb7e}");
             
