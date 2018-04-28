@@ -8,10 +8,10 @@ C:\Users\Samuel Bryner\AppData\Roaming\Autodesk\ApplicationPlugins\LaserTabAddin
 C:\Users\Samuel Bryner\AppData\Roaming\Autodesk\ApplicationPlugins\LaserTabAddin\LaserTabAddin.pdb
 C:\Users\Samuel Bryner\sync\projects\LaserTabAddin\LaserTabAddin\obj\Debug\LaserTabAddin.csproj.GenerateResource.Cache
 C:\Users\Samuel Bryner\sync\projects\LaserTabAddin\LaserTabAddin\obj\Debug\LaserTabAddin.Properties.Resources.resources
-C:\Users\Samuel Bryner\sync\projects\LaserTabAddin\LaserTabAddin\obj\Debug\LaserTabAddin.csprojResolveAssemblyReference.cache
 C:\Users\Samuel Bryner\sync\projects\LaserTabAddin\LaserTabAddin\obj\Debug\LaserTabAddin.LaserTabForm.resources
 C:\Users\Samuel Bryner\sync\projects\LaserTabAddin\LaserTabAddin\obj\Debug\LaserTabDialog.g.cs
 C:\Users\Samuel Bryner\sync\projects\LaserTabAddin\LaserTabAddin\obj\Debug\LaserTabAddin_MarkupCompile.cache
 C:\Users\Samuel Bryner\sync\projects\LaserTabAddin\LaserTabAddin\obj\Debug\LaserTabAddin_MarkupCompile.lref
 C:\Users\Samuel Bryner\sync\projects\LaserTabAddin\LaserTabAddin\obj\Debug\LaserTabDialog.baml
 C:\Users\Samuel Bryner\sync\projects\LaserTabAddin\LaserTabAddin\obj\Debug\LaserTabAddin.g.resources
+C:\Users\Samuel Bryner\sync\projects\LaserTabAddin\LaserTabAddin\obj\Debug\LaserTabAddin.csprojResolveAssemblyReference.cache

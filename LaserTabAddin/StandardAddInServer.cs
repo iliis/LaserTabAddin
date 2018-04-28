@@ -254,10 +254,50 @@ namespace LaserTabAddin
         {
             // references to some useful objects
             TransientGeometry geom = m_inventorApplication.TransientGeometry;
-            PartDocument document = m_inventorApplication.ActiveDocument as PartDocument;
-            PartComponentDefinition def = document.ComponentDefinition;
-            UserParameters user_params = def.Parameters.UserParameters;
-            UnitsOfMeasure units = document.UnitsOfMeasure;
+            //PartDocument document = m_inventorApplication.ActiveDocument as PartDocument;
+            //_Document document = m_inventorApplication.ActiveDocument;
+
+
+            /*
+            if (document == null)
+            {
+                AssemblyDocument asm = m_inventorApplication.ActiveDocument as AssemblyDocument;
+                m_inventorApplication.ActiveDocument;
+            }
+            */
+
+            PartComponentDefinition def;// = document.ComponentDefinition;
+            UnitsOfMeasure units;// = document.UnitsOfMeasure;
+            UserParameters user_params;
+            Document document = m_inventorApplication.ActiveDocument;
+
+            if (m_inventorApplication.ActiveDocument is AssemblyDocument)
+            {
+                AssemblyDocument doc = m_inventorApplication.ActiveDocument as AssemblyDocument;
+                PartDocument part = doc.ActivatedObject as PartDocument;
+
+                if (part == null)
+                {
+                    m_inventorApplication.ErrorManager.Show("Please activate a part!", true, false);
+                    return;
+                }
+
+                def = part.ComponentDefinition;
+                units = part.UnitsOfMeasure;
+                user_params = part.ComponentDefinition.Parameters.UserParameters;
+            }
+            else if (m_inventorApplication.ActiveDocument is PartDocument)
+            {
+                PartDocument doc = m_inventorApplication.ActiveDocument as PartDocument;
+                def = doc.ComponentDefinition;
+                units = doc.UnitsOfMeasure;
+                user_params = doc.ComponentDefinition.Parameters.UserParameters;
+            }
+            else
+            {
+                m_inventorApplication.ErrorManager.Show("Current document is neither an Assembly nor a Part.", true, false);
+                return;
+            }
 
             // get and check selected faces
             ObjectsEnumerator JustSelectedEntities = m_selects.SelectedEntities;
@@ -316,6 +356,11 @@ namespace LaserTabAddin
             foreach (Object _f in JustSelectedEntities)
             {
                 Face f = _f as Face;
+
+                if (_f is FaceProxy)
+                {
+                    f = ((FaceProxy)_f).NativeObject;
+                }
 
                 // TODO: make sure active document is a partDocument and ActiveEditObject is not a sketch (should be also a partDocument?)
                 // TODO: wrap it all into a ClientFeature
@@ -400,15 +445,44 @@ namespace LaserTabAddin
 
                 // {0}: total length
                 // {1}: user input (count or length of single tab)
+                
                 string expr;
                 if (m_dialog.mode_count.Checked)
                 {
-                    expr = "{0} / {1}";
+                    if (m_dialog.force_parity.Checked)
+                    {
+                        if (m_dialog.parity_even.Checked)
+                        {
+                            expr = "{0} / ( round({1}/2)*2 )";
+                        }
+                        else
+                        {
+                            expr = "{0} / ( round( ({1}+1)/2 )*2 - 1 )";
+                        }
+                    }
+                    else
+                    {
+                        expr = "{0} / {1}";
+                    }
                 }
                 else
                 {
                     // TODO: take dropdown of >/</~ into account
-                    expr = "{0} / round({0}/{1})";
+                    if (m_dialog.force_parity.Checked)
+                    {
+                        if (m_dialog.parity_even.Checked)
+                        {
+                            expr = "{0} / ( round( {0}/{1}/2 )*2 )";
+                        }
+                        else
+                        {
+                            expr = "{0} / ( round( ({0}/{1}+1)/2 )*2 - 1)";
+                        }
+                    }
+                    else
+                    {
+                        expr = "{0} / round({0}/{1})";
+                    }
                 }
 
                 tab_len_constraint1.Parameter.Expression = string.Format(expr, total_length_constr[i].Parameter.Name, tab_user_constr.Name);
@@ -484,9 +558,9 @@ namespace LaserTabAddin
                 }
 
                 // extrude said rectangle
-                ExtrudeDefinition extrusion_def = document.ComponentDefinition.Features.ExtrudeFeatures.CreateExtrudeDefinition(profile[i], op);
+                ExtrudeDefinition extrusion_def = def.Features.ExtrudeFeatures.CreateExtrudeDefinition(profile[i], op);
                 extrusion_def.SetDistanceExtent(dist_expr, dir);
-                extrusion[i] = document.ComponentDefinition.Features.ExtrudeFeatures.Add(extrusion_def);
+                extrusion[i] = def.Features.ExtrudeFeatures.Add(extrusion_def);
             }
 
             // do rectangular patterns
@@ -502,7 +576,7 @@ namespace LaserTabAddin
                 
 
                 RectangularPatternFeatureDefinition pattern_def =
-                document.ComponentDefinition.Features.RectangularPatternFeatures.CreateDefinition(
+                def.Features.RectangularPatternFeatures.CreateDefinition(
                     col, extrusion_dir[i], long_edge_dir[i], count_expr, tab_length_constr[i].Parameter.Name + "*2");
                 // TODO: we could use PatternSpacingType kFitToPathLength here...
 
@@ -510,7 +584,7 @@ namespace LaserTabAddin
                 {
 
                     rect_pattern[i] =
-                    document.ComponentDefinition.Features.RectangularPatternFeatures.AddByDefinition(pattern_def);
+                    def.Features.RectangularPatternFeatures.AddByDefinition(pattern_def);
                 }
                 catch (Exception ex)
                 {
