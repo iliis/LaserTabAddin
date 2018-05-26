@@ -31,6 +31,8 @@ namespace LaserTabAddin
 
         private ClientNodeResource m_browser_icon;
 
+        private LaserTabForm.LaserTabFormState m_form_state;
+
         /*
          * Modes:
          * - fixed number of tabs
@@ -148,7 +150,7 @@ namespace LaserTabAddin
             m_browser_events.OnBrowserNodeActivate  += new Inventor.BrowserPanesSink_OnBrowserNodeActivateEventHandler(this.BrowserPanesEvents_OnBrowserNodeActivate);
             m_browser_events.OnBrowserNodeLabelEdit += new Inventor.BrowserPanesSink_OnBrowserNodeLabelEditEventHandler(M_browser_events_OnBrowserNodeLabelEdit);
 
-            m_dialog = new LaserTabForm();
+            m_dialog = new LaserTabForm(m_form_state);
             
             m_dialog.Show(new InventorMainFrame(m_inventorApplication.MainFrameHWND));
             m_dialog.FormClosed += M_dialog_FormClosed;
@@ -183,6 +185,7 @@ namespace LaserTabAddin
             m_interaction = null;
 
             m_dialog.FormClosed -= M_dialog_FormClosed;
+            m_form_state = m_dialog.getState();
             m_dialog.Close();
             m_dialog = null;
         }
