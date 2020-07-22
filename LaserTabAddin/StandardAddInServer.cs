@@ -393,7 +393,7 @@ namespace LaserTabAddin
                 // project important points
                 SketchPoint P_orig  = sketch.AddByProjectingEntity(vert_origin) as SketchPoint;
                 SketchPoint P_long  = sketch.AddByProjectingEntity(vert_long_end) as SketchPoint;
-                SketchPoint P_short = sketch.AddByProjectingEntity(vert_short_end) as SketchPoint;
+                SketchPoint P_short = sketch.AddByProjectingEntity(vert_short_end) as SketchPoint; // fails! :(
 
 
                 // driven constraint of short dimension (determining thickness and depth of tab)
